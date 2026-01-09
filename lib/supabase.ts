@@ -1,0 +1,15 @@
+/**
+ * Supabase Client Setup
+ * 
+ * This file creates a connection to your Supabase database.
+ * We use the anonymous key (public key) since we don't need authentication.
+ */
+
+import { createClient } from '@supabase/supabase-js'
+
+// Get environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+// Create and export the Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
