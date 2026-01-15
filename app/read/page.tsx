@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase'
 import Navigation from '@/components/Navigation'
 import Modal from '@/components/Modal'
 import { getHumanTimestamp } from '@/lib/timestamp'
+import { truncateWords } from '@/lib/wordCount'
 
 // Type definition for an entry
 interface Entry {
@@ -66,6 +67,13 @@ export default function ReadPage() {
 
   const columns = distributeEntries(entries)
 
+  /**
+   * Get preview text for a message (first 30 words)
+   */
+  const getPreview = (content: string) => {
+    return truncateWords(content, 30)
+  }
+
   return (
     <div className="relative min-h-screen bg-[#0b0022]">
       {/* Background gradient overlay */}
@@ -89,27 +97,33 @@ export default function ReadPage() {
         <div className="pt-[145px] pb-[180px] md:pb-[250px] px-4">
           {/* Mobile: Single column with all entries */}
           <div className="max-w-[1200px] mx-auto flex flex-col md:hidden gap-[30px] items-center">
-            {entries.map((entry) => (
-              <button
-                key={entry.id}
-                onClick={() => setSelectedEntry(entry)}
-                className="glass flex flex-col gap-5 items-start p-5 rounded-[22px] shadow-[0px_0px_49.4px_0px_rgba(255,255,255,0.12)] hover:opacity-80 transition-opacity text-left relative w-full max-w-[358px]"
-              >
-                {/* Decorative ellipse */}
-                <div className="absolute left-5 top-2.5 w-[102px] h-[102px] opacity-20 pointer-events-none">
-                  <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
-                </div>
+            {entries.map((entry) => {
+              const { preview, needsTruncation } = getPreview(entry.content)
+              return (
+                <button
+                  key={entry.id}
+                  onClick={() => setSelectedEntry(entry)}
+                  className="glass flex flex-col gap-5 items-start p-5 rounded-[22px] shadow-[0px_0px_49.4px_0px_rgba(255,255,255,0.12)] hover:opacity-80 transition-opacity text-left relative w-full max-w-[358px]"
+                >
+                  {/* Decorative ellipse */}
+                  <div className="absolute left-5 top-2.5 w-[102px] h-[102px] opacity-20 pointer-events-none">
+                    <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
+                  </div>
 
-                <p className="text-white text-base opacity-70 whitespace-pre-wrap relative z-10">
-                  {entry.content}
-                </p>
-                <div className="bg-[rgba(255,255,255,0.1)] inline-flex items-center justify-center px-2.5 py-1.5 rounded-[45px]">
-                  <p className="text-white text-[10px]">
-                    {getHumanTimestamp(entry.created_at)}
+                  <p className="text-white text-base opacity-70 whitespace-pre-wrap relative z-10">
+                    {preview}
+                    {needsTruncation && (
+                      <span className="text-white/25"> Read more</span>
+                    )}
                   </p>
-                </div>
-              </button>
-            ))}
+                  <div className="bg-[rgba(255,255,255,0.1)] inline-flex items-center justify-center px-2.5 py-1.5 rounded-[45px]">
+                    <p className="text-white text-[10px]">
+                      {getHumanTimestamp(entry.created_at)}
+                    </p>
+                  </div>
+                </button>
+              )
+            })}
           </div>
 
           {/* Desktop: 3 columns with staggered offsets */}
@@ -123,27 +137,33 @@ export default function ReadPage() {
                   key={colIndex}
                   className={`flex flex-col gap-[30px] w-[358px] ${topOffsetClass}`}
                 >
-                  {columnEntries.map((entry) => (
-                    <button
-                      key={entry.id}
-                      onClick={() => setSelectedEntry(entry)}
-                      className="glass flex flex-col gap-5 items-start p-5 rounded-[22px] shadow-[0px_0px_49.4px_0px_rgba(255,255,255,0.12)] hover:opacity-80 transition-opacity text-left relative w-full"
-                    >
-                      {/* Decorative ellipse */}
-                      <div className="absolute left-5 top-2.5 w-[102px] h-[102px] opacity-20 pointer-events-none">
-                        <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
-                      </div>
+                  {columnEntries.map((entry) => {
+                    const { preview, needsTruncation } = getPreview(entry.content)
+                    return (
+                      <button
+                        key={entry.id}
+                        onClick={() => setSelectedEntry(entry)}
+                        className="glass flex flex-col gap-5 items-start p-5 rounded-[22px] shadow-[0px_0px_49.4px_0px_rgba(255,255,255,0.12)] hover:opacity-80 transition-opacity text-left relative w-full"
+                      >
+                        {/* Decorative ellipse */}
+                        <div className="absolute left-5 top-2.5 w-[102px] h-[102px] opacity-20 pointer-events-none">
+                          <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
+                        </div>
 
-                      <p className="text-white text-base opacity-70 whitespace-pre-wrap relative z-10">
-                        {entry.content}
-                      </p>
-                      <div className="bg-[rgba(255,255,255,0.1)] inline-flex items-center justify-center px-2.5 py-1.5 rounded-[45px]">
-                        <p className="text-white text-[10px]">
-                          {getHumanTimestamp(entry.created_at)}
+                        <p className="text-white text-base opacity-70 whitespace-pre-wrap relative z-10">
+                          {preview}
+                          {needsTruncation && (
+                            <span className="text-white/25"> Read more</span>
+                          )}
                         </p>
-                      </div>
-                    </button>
-                  ))}
+                        <div className="bg-[rgba(255,255,255,0.1)] inline-flex items-center justify-center px-2.5 py-1.5 rounded-[45px]">
+                          <p className="text-white text-[10px]">
+                            {getHumanTimestamp(entry.created_at)}
+                          </p>
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               )
             })}
