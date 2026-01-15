@@ -77,6 +77,7 @@ const HARMFUL_KEYWORDS = [
 "rape him",
 "rape them",
 "rape us",
+"rape",
 "i will rape",
 "you should be raped"
 

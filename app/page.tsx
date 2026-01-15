@@ -110,7 +110,9 @@ export default function LandingPage() {
       {/* Footer */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 items-center justify-center px-5 py-3">
         <span className="text-white text-lg opacity-50">☁️</span>
-        <p className="text-white text-xl font-medium opacity-20">Unsaid</p>
+        <Link href="/" className="text-white text-xl font-medium opacity-20">
+          Unsaid
+        </Link>
       </div>
     </div>
   )

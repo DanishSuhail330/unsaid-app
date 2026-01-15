@@ -8,6 +8,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import Navigation from '@/components/Navigation'
 import Modal from '@/components/Modal'
@@ -184,7 +185,9 @@ export default function ReadPage() {
       {/* Footer - Fixed to bottom of viewport */}
       <div className="fixed bottom-[13px] left-1/2 -translate-x-1/2 flex gap-3 items-center justify-center px-5 py-3 z-30">
         <span className="text-white text-lg opacity-50">☁️</span>
-        <p className="text-white text-xl font-medium opacity-20">Unsaid</p>
+        <Link href="/" className="text-white text-xl font-medium opacity-20">
+          Unsaid
+        </Link>
       </div>
 
       {/* Modal */}
